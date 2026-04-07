@@ -1,6 +1,5 @@
 // ── Element refs ──────────────────────────────────────────────────────────────
 
-const stateNoKey       = document.getElementById('stateNoKey');
 const stateUnsupported = document.getElementById('stateUnsupported');
 const stateError       = document.getElementById('stateError');
 const stateMain        = document.getElementById('stateMain');
@@ -13,7 +12,6 @@ const toneSelect       = document.getElementById('toneSelect');
 
 const generateBtn      = document.getElementById('generateBtn');
 const retryBtn         = document.getElementById('retryBtn');
-const goToOptionsBtn   = document.getElementById('goToOptionsBtn');
 
 const outputWrap       = document.getElementById('outputWrap');
 const outputText       = document.getElementById('outputText');
@@ -28,21 +26,17 @@ let currentContext = null;
 // ── Init ──────────────────────────────────────────────────────────────────────
 
 (async function init() {
-  // 1. Check API key
-  const { claudeApiKey } = await chrome.storage.local.get('claudeApiKey');
-  if (!claudeApiKey) { show(stateNoKey); return; }
-
-  // 2. Restore saved tone
+  // 1. Restore saved tone
   const { savedTone } = await chrome.storage.local.get('savedTone');
   if (savedTone) toneSelect.value = savedTone;
 
-  // 3. Check tab URL — only proceed on supported platforms
+  // 2. Check tab URL — only proceed on supported platforms
   const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
   const url = tab.url || '';
   const supported = url.includes('youtube.com') || url.includes('linkedin.com') || url.includes('substack.com');
   if (!supported) { show(stateUnsupported); return; }
 
-  // 4. Fetch context from content script
+  // 3. Fetch context from content script
   try {
     const response = await chrome.tabs.sendMessage(tab.id, { action: 'GET_PAGE_CONTEXT' });
 
@@ -74,7 +68,6 @@ let currentContext = null;
 generateBtn.addEventListener('click', () => generate());
 regenerateBtn.addEventListener('click', () => generate());
 retryBtn.addEventListener('click', () => location.reload());
-goToOptionsBtn.addEventListener('click', () => chrome.runtime.openOptionsPage());
 
 toneSelect.addEventListener('change', () => {
   chrome.storage.local.set({ savedTone: toneSelect.value });
@@ -99,9 +92,6 @@ async function generate() {
   setLoading(true);
 
   try {
-    const { claudeApiKey } = await chrome.storage.local.get('claudeApiKey');
-    if (!claudeApiKey) { show(stateNoKey); return; }
-
     // Re-fetch context
     const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
     const ctxResponse = await chrome.tabs.sendMessage(tab.id, { action: 'GET_PAGE_CONTEXT' });
@@ -124,7 +114,6 @@ async function generate() {
       action: 'GENERATE_COMMENT',
       context: currentContext,
       tone: toneSelect.value,
-      apiKey: claudeApiKey,
     });
 
     if (!response.ok) throw new Error(response.error);
@@ -171,7 +160,7 @@ function renderContextCard(ctx) {
 }
 
 function show(el) {
-  for (const s of [stateNoKey, stateUnsupported, stateError, stateMain]) {
+  for (const s of [stateUnsupported, stateError, stateMain]) {
     s.classList.add('hidden');
   }
   el.classList.remove('hidden');
