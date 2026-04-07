@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Context Commenter</title>
+  <link rel="stylesheet" href="popup.css" />
+</head>
+<body>
+
+  <!-- Header (no settings button — use right-click → Options) -->
+  <header>
+    <span class="logo">Context Commenter</span>
+  </header>
+
+  <!-- State: no API key -->
+  <div id="stateNoKey" class="state hidden">
+    <p class="state-msg">No API key saved.</p>
+    <button id="goToOptionsBtn" class="btn-primary full-width">Open Settings</button>
+  </div>
+
+  <!-- State: unsupported page -->
+  <div id="stateUnsupported" class="state hidden">
+    <p class="state-msg">Open a YouTube, Substack, or LinkedIn page, highlight some text, then click the extension.</p>
+  </div>
+
+  <!-- State: error -->
+  <div id="stateError" class="state hidden">
+    <p class="state-msg error" id="errorText"></p>
+    <button id="retryBtn" class="btn-secondary full-width">Retry</button>
+  </div>
+
+  <!-- State: main UI -->
+  <div id="stateMain" class="state hidden">
+
+    <!-- Context preview card -->
+    <div class="context-card">
+      <div class="context-top">
+        <span class="platform-badge" id="platformBadge"></span>
+        <span class="context-label" id="contextLabel"></span>
+      </div>
+      <p class="context-preview empty" id="contextPreview"></p>
+    </div>
+
+    <!-- Tone selector -->
+    <div class="field-row">
+      <label for="toneSelect">Tone</label>
+      <select id="toneSelect">
+        <option value="thoughtful">Thoughtful</option>
+        <option value="enthusiastic">Enthusiastic</option>
+        <option value="professional">Professional</option>
+        <option value="concise">Concise</option>
+        <option value="curious">Curious</option>
+      </select>
+    </div>
+
+    <!-- Generate button -->
+    <button id="generateBtn" class="btn-primary full-width">Generate Comment</button>
+
+    <!-- Output area (hidden until generated) -->
+    <div id="outputWrap" class="hidden">
+      <div class="output-header">
+        <span class="output-label">Generated comment</span>
+        <button id="copyBtn" class="copy-btn">Copy</button>
+      </div>
+      <textarea id="outputText" rows="5" spellcheck="true"></textarea>
+      <button id="regenerateBtn" class="btn-secondary full-width">Regenerate</button>
+    </div>
+
+    <!-- Loading indicator -->
+    <div id="loadingWrap" class="hidden">
+      <div class="spinner"></div>
+      <p class="loading-msg">Generating comment…</p>
+    </div>
+
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>

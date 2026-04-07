@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python -c \"import PIL; print\\('Pillow available'\\)\")",
+      "Bash(python -c \"import cairosvg\")",
+      "Bash(python -c \"import struct, zlib; print\\('struct+zlib ok'\\)\")",
+      "Bash(pip install:*)",
+      "Bash(python:*)",
+      "Bash(rerun:*)"
+    ]
+  }
+}
