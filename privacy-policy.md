@@ -36,4 +36,4 @@ See: https://www.anthropic.com/privacy
 
 ## Contact
 For questions about this privacy policy contact: 
-[your email here]
+vatsalsnaik@gmail.com
